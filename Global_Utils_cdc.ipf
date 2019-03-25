@@ -83,9 +83,10 @@ Function AllAxesFreePosZero(graphName)
 End
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 Function/T DiscriminatedAxisList( graphName, axis_Type )
-	string graphName, axis_Type
+// returns a string list of axes names of a given type (e.g. left) from a graph
+	string graphName // the name of your graph
+	string axis_Type // the type of axis to consider
 	String return_str =""
 	Variable left = cmpstr( LowerStr(axis_type), "left" )
 	Variable bottom = cmpstr( LowerStr(axis_type), "bottom" )
@@ -109,6 +110,8 @@ Function/T DiscriminatedAxisList( graphName, axis_Type )
 	return return_str
 End
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 Function/T DiscriminatedTraceList( graphName, axisName )
 	string graphName, axisName
 	String return_str =""
@@ -131,7 +134,9 @@ End
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Function /T ListTracesOnAxis( axis_name, graph_name )
-	String axis_name, graph_name
+// returns a string with names of all traces on a given axis
+	String axis_name // name of axis
+	String graph_name // name of graph
 	
 	String return_list = ""
 	String list_of_traces = TraceNameList( graph_name, ";", 1 )
@@ -153,6 +158,8 @@ End
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 FUNCTION MeanWithNaN(NameStr,PrintVar)
+// returns the mean of a wave that has nans
+// basically does the same thing as WaveStats
 	String NameStr
 	variable PrintVar
 	WAVE NameW = $NameStr
@@ -184,6 +191,7 @@ END FUNCTION
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 FUNCTION GeometricMean(thewave)
+// returns the geometric mean of a wave; ignores nans
 	wave thewave
 	
 	WaveStats/Q thewave
@@ -210,7 +218,8 @@ END FUNCTION
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 FUNCTION MakeNaNFromGraph()
-
+// will make points in a wave nan; acts only on the y-wave
+// will operate based on cursor on top graph
 	variable index = pcsr(A)
 	WAVE wA = CsrWaveRef(A)
 	wA[index] = NaN
@@ -234,8 +243,9 @@ End
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Function PrimaryColors(graphName,[special])
-	String graphName
-	variable special
+// function to color waves on a graph different colors
+	String graphName // if blank ("") will operate on top graph
+	variable special // set to 1 for alternate color scheme
 	
 	Wave/Z pc_red=pc_red
 	Wave/Z pc_green=pc_green
@@ -245,10 +255,9 @@ Function PrimaryColors(graphName,[special])
 	Make/O/N=26 pc_blue={    0, 0, 15616, 20736, 16384, 65280, 65280, 26112, 52224, 65280, 0, 0, 0, 65280, 0, 30464, 21760, 0, 34816, 43520, 0, 31232, 58880, 0, 0, 0}
 	
 	if(special == 1)
-	
-	pc_red = {512, 0, 48896, 65024, 65280}
-	pc_green = {23296, 34816, 59904, 52992, 27136, 0}
-	pc_blue = { 48384, 52224, 65280, 28672, 27136, 0}
+		pc_red = {512, 0, 48896, 65024, 65280}
+		pc_green = {23296, 34816, 59904, 52992, 27136, 0}
+		pc_blue = { 48384, 52224, 65280, 28672, 27136, 0}
 	endif
 	
 	Variable num_axes, axis_dex = 0, dex
