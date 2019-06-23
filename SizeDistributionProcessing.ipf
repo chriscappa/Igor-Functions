@@ -109,7 +109,7 @@ function load_smps_files()
 	// to load a single SMPS file
 	string extension = "txt"
 	Variable refNum
-	String message = "Select one or more files"
+	String message = "Select one or more SMPS files"
 	String file_list
 	String fileFilters = "Data Files (*."+extension+"):."+extension+";"
 	Open /D /R /MULT=1 /F=fileFilters /M=message refNum
@@ -514,6 +514,7 @@ end
 // Functions to load time-series of CPC number concentrations determined
 // using a TSI CPC and exported from the AIM program.
 // Text files must be exported as *.txt, columns, time stamp
+// Export only the concentration, and comma delimited
 function load_cpc_files()
 // load a selection of CPC files
 	string extension = "txt"
@@ -3098,6 +3099,30 @@ Macro ConvertDpaToDpmMacro(density,APSstr,DpaStr,type,DpaUnits,MobilityStr,DpmSt
 	endif
 	
 	killwaves/z dlogDpa, dlogDpm, logDpa, logDpm, slip_a, slip_m, dpa2
+	
+end
+
+ //********************************************************************************************
+Function DpmShapeCorrection(Dpm,SCF)
+	// convert mobility diameters to shape-corrected mass diameters
+	variable Dpm // = mobility diameter, in nm
+	variable SCF // = shape correction factor; AmmSulf = 1.02; NaCl = 1.08
+	variable slip_mob
+	variable slip_mass
+	variable Dpmass = Dpm
+	variable MFP = 68 // nm, mean free path
+	
+	// Convert Dpmobility --> Dpmass
+	slip_mob =1+2*(MFP/Dpm)*(1.142+0.558*EXP(-0.55*Dpm/MFP))				// Cunningham slip correction factor, aerodynamic diameter
+	slip_mass = slip_mob
+	variable i=0
+	do
+		slip_mass =1+2*(MFP/dpmass)*(1.142+0.558*EXP(-0.55*dpmass/MFP))		// Cunningham slip correction factor, mobility diameter
+		Dpmass = dpm*(slip_mass/slip_mob)*(1/SCF)										// mobility diameter from aerodynamic diameter
+	i+=1
+	while(i<100)
+	
+	return(DpMass)
 	
 end
 
